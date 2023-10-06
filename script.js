@@ -81,7 +81,7 @@ tabsContainer.addEventListener('click', function (e) {
 
 // Menu fade animation
 
-const handleHover = function(e){
+const handleHover = function (e) {
   if (e.target.classList.contains('nav__link')) {
     const link = e.target;
     const siblings = link.closest('.nav').querySelectorAll('.nav__link');
@@ -93,11 +93,11 @@ const handleHover = function(e){
     });
     logo.style.opacity = this;
   }
-}
+};
 // passing "argument" into handler
 nav.addEventListener('mouseover', handleHover.bind(0.5));
 
-nav.addEventListener('mouseout',handleHover.bind(1));
+nav.addEventListener('mouseout', handleHover.bind(1));
 
 // Sticky navigation
 // const initialCoords = section1.getBoundingClientRect()
@@ -105,7 +105,7 @@ nav.addEventListener('mouseout',handleHover.bind(1));
 // window.addEventListener('scroll', function() {
 //   console.log(window.scrollY);
 //   if(this.window.scrollY > initialCoords.top) nav.
-//   classList.add('sticky') 
+//   classList.add('sticky')
 //   else nav.classList.remove('sticky');
 // })
 
@@ -114,43 +114,43 @@ const navHeight = nav.getBoundingClientRect().height;
 const stickyNav = function (entries) {
   const [entry] = entries;
   // console.log(entry);
-  if (!entry.isIntersecting) nav.classList.add ('sticky');
+  if (!entry.isIntersecting) nav.classList.add('sticky');
   else nav.classList.remove('sticky');
 };
 
-const headerObserver = new IntersectionObserver (stickyNav , {
+const headerObserver = new IntersectionObserver(stickyNav, {
   root: null,
   threshold: 0,
   rootMargin: `${navHeight}px`,
-})
+});
 
 headerObserver.observe(header);
 
 // Reveal sections
-const allSections = document.querySelectorAll('.section')
-const revealSection = function (entries,observer) {
-const [entry] = entries;
-if (!entry.isIntersecting) return;
-entry.target.classList.remove('section--hidden');
-observer.unobserve(entry.target);
-}
-const sectionObserver = new IntersectionObserver
-(revealSection , {
-  root:null,
+const allSections = document.querySelectorAll('.section');
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  if (!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target);
+};
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
   threshold: 0.15,
 });
 
 allSections.forEach(function (section) {
   sectionObserver.observe(section);
-  section.classList.add('section--hidden');
-})
+  //section.classList.add('section--hidden');
+});
 
 // Lazy loading images
 const imgTargets = document.querySelectorAll('img[data-src]');
 
 const loadImg = function (entries, observer) {
   const [entry] = entries;
-
+  //console.log(entries);
+  //console.log(observer);
   if (!entry.isIntersecting) return;
 
   // Replace src with data-src
@@ -170,3 +170,46 @@ const imgObserver = new IntersectionObserver(loadImg, {
 });
 
 imgTargets.forEach(img => imgObserver.observe(img));
+
+
+// slider
+
+const slides = document.querySelectorAll('.slide');
+const btnLeft = document.querySelector('.slider__btn__left');
+const btnRight = document.querySelector('.slider__btn__right');
+let curSlide =  0;
+const maxSlide = slides.length;
+const slider = document.querySelector('.slider');
+slider.style.transform = 'scale(0.4) translateX(-800px)'
+slider.style.overflow = 'visible';
+
+slides.forEach((s,i) => (s.style.transform = `translate($100*i)%`));
+
+const gotoSlide = function(slide) {
+  slides.forEach((s,i) =>(s.style.transform = `translateX(${100 * (i-slide)}%)`)
+  )
+}
+gotoSlide(0);
+// Next slide
+const nextSlide  = function() {
+  if(curSlide === maxSlide-1) {
+    curSlide =0;
+  }
+  else {
+  curSlide++;
+  }
+gotoSlide(curSlide);
+ 
+}
+
+const prevSlide = function() {
+  if(curSlide ===0) {
+    curSlide = maxSlide-1;
+  }
+  else {
+  curSlide--;
+  }
+  gotoSlide(curSlide)
+}
+btnRight.addEventListener('click',nextSlide);
+btnLeft.addEventListener('click', prevSlide)
